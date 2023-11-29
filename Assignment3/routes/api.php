@@ -2,15 +2,21 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AuthController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 
-Route::get('/task', [TaskController::class, 'get_tasks']);
-Route::post('/task/create', [TaskController::class, 'create_task']);
-Route::put('/task/{task}/update', [TaskController::class, 'update_task']);
-Route::delete('/task/{task}/delete', [TaskController::class, 'delete_task']);
+Route::middleware('jwt')->group(function () {
+    Route::get('/task', [TaskController::class, 'get_tasks']);
+    Route::post('/task/create', [TaskController::class, 'create_task']);
+    Route::put('/task/{task}/update', [TaskController::class, 'update_task']);
+    Route::delete('/task/{task}/delete', [TaskController::class, 'delete_task']);
+});
+
 
