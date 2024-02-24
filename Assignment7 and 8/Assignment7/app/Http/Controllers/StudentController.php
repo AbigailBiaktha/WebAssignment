@@ -8,7 +8,7 @@ use App\Models\Student;
 class StudentController extends Controller
 {
     /**
-     * Show the registration form.
+     * Show the student registration form.
      *
      * @return \Illuminate\View\View
      */
@@ -26,20 +26,20 @@ class StudentController extends Controller
     public function register(Request $request)
     {
         // Validate the incoming request data
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Create the new student record
+        // Create a new student record
         $student = new Student();
-        $student->name = $request->name;
-        $student->email = $request->email;
-        $student->password = bcrypt($request->password);
+        $student->name = $validatedData['name'];
+        $student->email = $validatedData['email'];
+        $student->password = bcrypt($validatedData['password']);
         $student->save();
 
-        // Redirect to a success page or back to the form
+        // Redirect to the registration form with success message
         return redirect()->route('register')->with('success', 'Student registered successfully!');
     }
 }
